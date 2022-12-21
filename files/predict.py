@@ -1,9 +1,10 @@
 from data_prep import *
 from feature import *
 from train import *
+import utils
+
 
 EXPERIMENT_NAME = "mlflow-demo"
-
 client = MlflowClient()
 
 # Retrieve Experiment information
@@ -19,7 +20,8 @@ EXPERIMENT_ID = client.get_experiment_by_name(EXPERIMENT_NAME).experiment_id
 
 if __name__ == "__main__" :
     with mlflow.start_run() :
-        y_pred = log_reg.predict(X_val_enrich) # y_pred = log_reg.predict(X_test)
+
+        y_pred = model.predict(X_val_enrich)  
         c, f1score, accuracy = 0.001, f1_score(y_val_enrich, y_pred), accuracy_score(y_val_enrich, y_pred)
         print('c: ', 0.001, ': ', 'f1_score: ', f1_score(y_val_enrich, y_pred), 'accuracy_score: ', accuracy_score(y_val_enrich, y_pred)) # accuracy_score(y_test, y_pred)
 
@@ -37,8 +39,9 @@ if __name__ == "__main__" :
         # # Add y_test & y_pred columns to the X_test dataset
         test_df = X_val_enrich_df.join(y_val_enrich_df).join(y_pred_df)
 
-        URL = r'..\\data\\final_test_df.csv'
-        write_data(URL, test_df)
+
+        URL = r'../../data/final_test_df.csv'
+        utils.write_data(URL, test_df)
 
         mlflow.log_metric("f1_score", f1score)
         mlflow.log_metric("accuracy", accuracy)
