@@ -1,3 +1,4 @@
 # mlflow_project
 
-Les README, c'est la vie.
+Using MLflow to log and industrialize our ML project
+
