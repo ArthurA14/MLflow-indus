@@ -23,6 +23,11 @@ python3 train.py logistic
 ```
 
 ### Predicting on test data
+
+#### Warning : provide the model path in the script
+
+![image](https://user-images.githubusercontent.com/57401552/209138374-4ed4009c-23a9-47dc-9a87-9c6bb4edef77.png)
+
 ```bash
 python3 predict.py
 ```
