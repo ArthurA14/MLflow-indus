@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
 
 def get_data(URL) :
@@ -26,6 +27,50 @@ def write_data(URL, df) :
         CSV file
     """
     return df.to_csv(URL, sep=";", index=False, header=True)
+
+
+def encoding(train_df, val_df, test_df):
+    """
+    An encoding helper function to create new dataframes with business features
+    
+    Args: 
+        pd.DataFrame: train dataset
+        pd.DataFrame: validation dataset
+        pd.DataFrame: test dataset
+    
+    Returns:
+        pd.DataFrame: three train, validation and test datasets with encoded categorical features
+    """
+
+    print('Training Features shape: ', train_df.shape)
+    print('Training Features shape: ', val_df.shape)
+    print('Testing Features shape: ', test_df.shape)
+
+    # label encoding categorial variables if cat count <= 2
+    le = LabelEncoder()
+    le_cols = 0
+
+    for col in train_df:
+        if train_df[col].dtype == 'object' :
+            if len(list(train_df[col].unique())) <= 2:
+                # Train on the training data and avoid leakage
+                le.fit(train_df[col])
+                # Transform both training and testing data
+                train_df[col] = le.transform(train_df[col])
+                val_df[col] = le.transform(val_df[col])
+                test_df[col] = le.transform(test_df[col])
+                le_cols += 1
+
+    # one-hot encoding of remaining categorical variables
+    train = pd.get_dummies(train_df)
+    val = pd.get_dummies(val_df)
+    test = pd.get_dummies(test_df)
+
+    print('Training Features shape after encoding: ', train.shape)
+    print('Training Features shape after encoding: ', val.shape)
+    print('Testing Features shape after encoding: ', test.shape)
+
+    return train, val, test
 
 
 def feature_eng(train_df, val_df, test_df):
