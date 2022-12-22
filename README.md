@@ -11,11 +11,18 @@ MLflow consists of the following four main components:
 
 ## Package Usage
 
+### Training 
+
 * lbgm model: 
 ```bash
-python3 predict.py lgbm
+python3 train.py lgbm
 ```
 * logistic model: 
 ```bash
-python3 predict.py logistic
+python3 train.py logistic
+```
+
+### Predicting on test data
+```bash
+python3 predict.py
 ```
