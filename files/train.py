@@ -1,13 +1,38 @@
-from sklearn.preprocessing import StandardScaler
-from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 import lightgbm as lgb
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
 from sklearn.metrics import f1_score, accuracy_score
 from urllib.parse import urlparse
-from data_prep import *
-from feature import *
+import mlflow
+import mlflow.sklearn
 from argparse import ArgumentParser
+import joblib
+import utils
+from data_prep import logger
 
+
+
+TRAIN_URL = r'../data/train_enrich.csv'
+VAL_URL = r'../data/val_enrich.csv'
+TEST_URL = r'../data/test_enrich.csv' 
+
+
+# Create experiment
+EXPERIMENT_NAME = "mlflow-demo"
+try:
+    EXPERIMENT_ID = mlflow.create_experiment(EXPERIMENT_NAME)
+except Exception as e:
+    logger.exception("Experiment ID already set. Error: %s", e)
+
+
+try :
+    # get data
+    train_enrich = utils.get_data(TRAIN_URL)
+    val_enrich = utils.get_data(VAL_URL)
+    test_enrich = utils.get_data(TEST_URL)
+except Exception as e :
+    logger.exception("Unable to download training & test CSV. Error: %s", e)
 
 # Initialize the Parser
 parser = ArgumentParser(description ='Select a machine learning model: logistic or lgbm.')
@@ -38,6 +63,9 @@ with mlflow.start_run(run_name="PARENT_RUN") :
     X_train_enrich = imputer.transform(X_train_enrich)
     X_val_enrich = imputer.transform(X_val_enrich)
     test_enrich = imputer.transform(test_enrich)
+    # saving fitted scaler
+    imputer_filename = "imputer.save"
+    joblib.dump(imputer, imputer_filename) 
 
     # scaling
     scaler = StandardScaler()
@@ -45,6 +73,9 @@ with mlflow.start_run(run_name="PARENT_RUN") :
     X_train_enrich = scaler.transform(X_train_enrich)
     X_val_enrich = scaler.transform(X_val_enrich)
     test_enrich = scaler.transform(test_enrich)
+    # saving fitted scaler
+    scaler_filename = "std_scaler.save"
+    joblib.dump(scaler, scaler_filename) 
 
 
     if args.model[0] == 'lgbm': 
