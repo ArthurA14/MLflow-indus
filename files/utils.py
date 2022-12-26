@@ -1,5 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
+import numpy as np
+import joblib
 
 
 def get_data(URL) :
@@ -12,12 +14,12 @@ def get_data(URL) :
     Returns:
         pd.DataFrame
     """
-    return pd.read_csv(URL, sep=",", header='infer')
+    return pd.read_csv(URL, sep=",")
     
 
 def write_data(URL, df) : 
     """
-    Helper write a dataframe to csv
+    Helper to write a dataframe to csv
     
     Args: 
         Path: path to the csv file
@@ -26,79 +28,87 @@ def write_data(URL, df) :
     Returns:
         CSV file
     """
-    return df.to_csv(URL, sep=";", index=False, header=True)
+    return df.to_csv(URL, sep=",", index=False, header=True)
 
 
-def encoding(train_df, val_df, test_df):
+def fix_anomalies(df):
     """
-    An encoding helper function to create new dataframes with business features
+    Helper to spot anomalies in the data
     
     Args: 
-        pd.DataFrame: train dataset
-        pd.DataFrame: validation dataset
-        pd.DataFrame: test dataset
+        pd.DataFrame: dataframe to inspect
     
     Returns:
-        pd.DataFrame: three train, validation and test datasets with encoded categorical features
+        pd.DataFrame 
     """
 
-    print('Training Features shape: ', train_df.shape)
-    print('Training Features shape: ', val_df.shape)
-    print('Testing Features shape: ', test_df.shape)
+    # on indique les valeurs abbérantes detectées lors de l'EDA avec un booléen 
+    df['DAYS_EMPLOYED_ANOMALIES'] = df["DAYS_EMPLOYED"] == 365243
+    # on les remplace avec np.nan pour imputation ultérieure
+    df["DAYS_EMPLOYED"].replace({365243: np.nan}, inplace = True)
+    
+    return df
+
+
+def encoding(df, is_trainable=True):
+    """
+    An encoding helper function to encode categorical vars
+    
+    Args: 
+        pd.DataFrame: dataset to encode
+        bool: True if train set, False otherwise. Default: True.
+    
+    Returns:
+        pd.DataFrame: dataset with encoded categorical features
+    """ 
+    
+    print('Features shape before encoding: ', df.shape) 
 
     # label encoding categorial variables if cat count <= 2
     le = LabelEncoder()
-    le_cols = 0
-
-    for col in train_df:
-        if train_df[col].dtype == 'object' :
-            if len(list(train_df[col].unique())) <= 2:
-                # Train on the training data and avoid leakage
-                le.fit(train_df[col])
-                # Transform both training and testing data
-                train_df[col] = le.transform(train_df[col])
-                val_df[col] = le.transform(val_df[col])
-                test_df[col] = le.transform(test_df[col])
-                le_cols += 1
+    encoder_filename = "encoder.save"   
+    encoded_cols = list()
+    if is_trainable:
+        for col in df:
+            if df[col].dtype == 'object' :
+                if len(list(df[col].unique())) <= 2:
+                        # Train on the training data and avoid leakage
+                        le.fit(df[col])
+                        # Transform
+                        df[col] = le.transform(df[col])
+                        encoded_cols.append(col)
+        # saving fitted encoder
+        joblib.dump(le, encoder_filename) 
+    else:
+        le = joblib.load(encoder_filename) 
+        for col in encoded_cols:
+            if df[col].dtype == 'object' :
+                if len(list(df[col].unique())) <= 2:
+                    df[col] = le.transform(df[col])
+    
 
     # one-hot encoding of remaining categorical variables
-    train = pd.get_dummies(train_df)
-    val = pd.get_dummies(val_df)
-    test = pd.get_dummies(test_df)
+    df = pd.get_dummies(df) 
 
-    print('Training Features shape after encoding: ', train.shape)
-    print('Training Features shape after encoding: ', val.shape)
-    print('Testing Features shape after encoding: ', test.shape)
+    print('Features shape after encoding: ', df.shape) 
 
-    return train, val, test
+    return df 
 
 
-def feature_eng(train_df, val_df, test_df):
+def feature_eng(df):
     """
     A feature engineering function to create new dataframes with business features
     
     Args: 
-        pd.DataFrame: train dataset
-        pd.DataFrame: validation dataset
-        pd.DataFrame: test dataset
+        pd.DataFrame: dataset to enrich 
     
     Returns:
-        pd.DataFrame: three train, validation and test datasets with added business features
+        pd.DataFrame: dataset with added business features
     """
 
-    train_df['CREDIT_INCOME_PERCENT'] = train_df['AMT_CREDIT'] / train_df['AMT_INCOME_TOTAL']
-    train_df['ANNUITY_INCOME_PERCENT'] = train_df['AMT_ANNUITY'] / train_df['AMT_INCOME_TOTAL']
-    train_df['CREDIT_TERM'] = train_df['AMT_ANNUITY'] / train_df['AMT_CREDIT']
-    train_df['DAYS_EMPLOYED_PERCENT'] = train_df['DAYS_EMPLOYED'] / train_df['DAYS_BIRTH']
+    df['CREDIT_INCOME_PERCENT'] = df['AMT_CREDIT'] / df['AMT_INCOME_TOTAL']
+    df['ANNUITY_INCOME_PERCENT'] = df['AMT_ANNUITY'] / df['AMT_INCOME_TOTAL']
+    df['CREDIT_TERM'] = df['AMT_ANNUITY'] / df['AMT_CREDIT']
+    df['DAYS_EMPLOYED_PERCENT'] = df['DAYS_EMPLOYED'] / df['DAYS_BIRTH']
 
-    val_df['CREDIT_INCOME_PERCENT'] = val_df['AMT_CREDIT'] / val_df['AMT_INCOME_TOTAL']
-    val_df['ANNUITY_INCOME_PERCENT'] = val_df['AMT_ANNUITY'] / val_df['AMT_INCOME_TOTAL']
-    val_df['CREDIT_TERM'] = val_df['AMT_ANNUITY'] / val_df['AMT_CREDIT']
-    val_df['DAYS_EMPLOYED_PERCENT'] = val_df['DAYS_EMPLOYED'] / val_df['DAYS_BIRTH']
-
-    test_df['CREDIT_INCOME_PERCENT'] = test_df['AMT_CREDIT'] / test_df['AMT_INCOME_TOTAL']
-    test_df['ANNUITY_INCOME_PERCENT'] = test_df['AMT_ANNUITY'] / test_df['AMT_INCOME_TOTAL']
-    test_df['CREDIT_TERM'] = test_df['AMT_ANNUITY'] / test_df['AMT_CREDIT']
-    test_df['DAYS_EMPLOYED_PERCENT'] = test_df['DAYS_EMPLOYED'] / test_df['DAYS_BIRTH']
-
-    return train_df, val_df, test_df
+    return df
