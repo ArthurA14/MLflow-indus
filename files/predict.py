@@ -1,6 +1,7 @@
 from mlflow.tracking import MlflowClient
 from data_prep import logger
 import pandas as pd
+import numpy as np
 import joblib
 import mlflow
 import utils
@@ -35,7 +36,7 @@ def predict(data: pd.DataFrame):
         pd.DataFrame of given features to perform prediction on
     
     Returns:
-        pd.DataFrame
+        np.array with model predictions
     """
 
     # load necessary trained artefacts
