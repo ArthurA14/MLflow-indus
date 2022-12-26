@@ -31,3 +31,13 @@ python3 train.py logistic
 ```bash
 python3 predict.py
 ```
+
+## API Usage
+
+### Predict endpoint
+
+```bash
+python3 main.py
+```
+
+Then provide a csv to the endpoint URL (CF code in notebook test_api)
