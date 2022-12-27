@@ -28,7 +28,7 @@ def write_data(path, df) :
     Returns:
         CSV file
     """
-    return df.to_csv(path, sep=";", index=False, header=True)
+    return df.to_csv(path, sep=",", index=False, header=True)
 
 
 def drop_column_with_nan(df) :
