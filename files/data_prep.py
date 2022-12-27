@@ -83,6 +83,17 @@ def data_prep(train_df, test_df) :
     val_df = utils.fix_anomalies(val_df)
     test_df = utils.fix_anomalies(test_df)
 
+
+    TRAIN_DF_PATH = r'..\\data\\train_df.csv'
+    utils.write_data(TRAIN_DF_PATH, train_df)
+
+    VAL_DF_PATH = r'..\\data\\val_df.csv'
+    utils.write_data(VAL_DF_PATH, val_df)
+
+    TEST_DF_PATH = r'..\\data\\test_df.csv'
+    utils.write_data(TEST_DF_PATH, test_df)
+
+
     return train_df, val_df, test_df
 
 
