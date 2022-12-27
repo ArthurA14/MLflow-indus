@@ -40,4 +40,11 @@ python3 predict.py
 python3 main.py
 ```
 
-Then provide a csv to the endpoint URL (CF code in notebook test_api)
+Then provide a csv to the endpoint URL (CF code in notebook test_api.ipynb)
+
+
+## SHAP Library
+
+### Let's get some explanations from visualizations
+
+CF code in notebook shap_viz.ipynb
