@@ -10,6 +10,21 @@ from argparse import ArgumentParser
 import joblib
 import data_prep as dp
 import feature as ft
+import utils
+
+
+# TRAIN_DF_PATH = r'..\\data\\train_enrich.csv'
+# VAL_DF_PATH = r'..\\data\\val_enrich.csv'
+# TEST_DF_PATH = r'..\\data\\test_enrich.csv' 
+
+# try :
+#     # get data
+#     train_enrich = utils.get_data(TRAIN_DF_PATH)
+#     val_enrich = utils.get_data(VAL_DF_PATH)
+#     test_enrich = utils.get_data(TEST_DF_PATH)
+# except Exception as e :
+#     dp.logger.exception("Unable to download training & test CSV. Error: %s", e)
+
 
 #create experiment
 EXPERIMENT_NAME = "mlflow-demo"
@@ -131,8 +146,7 @@ with mlflow.start_run(run_name="PARENT_RUN") :
     # Model registry does not work with file store
     if tracking_url_type_store != "file" :
         # Register the model
-        # There are other ways to use the Model Registry, which depends on the use case,
-        # please refer to the doc for more information:
+        # There are other ways to use the Model Registry, cf :
         # https://mlflow.org/docs/latest/model-registry.html#api-workflow
         mlflow.sklearn.log_model(best_model, "model", registered_model_name=f"{args.model[0]}_model")
     else :
