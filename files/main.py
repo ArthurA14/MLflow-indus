@@ -1,19 +1,20 @@
 from flask import Flask, request 
-from predict import predict
 import json, io, joblib
 import pandas as pd
-from data_prep import data_prep, logger
+import data_prep as dp
 import utils
+from predict import predict_
 
 
 app = Flask(__name__)
-TRAIN_URL = r'../data/application_train.csv'
+TRAIN_DF_PATH = r'..\\data\\application_train.csv'
+
 
 try :
     # get data
-    train = utils.get_data(TRAIN_URL) 
+    train = utils.get_data(TRAIN_DF_PATH) 
 except Exception as e :
-    logger.exception("Unable to download training & test CSV. Error: %s", e)
+    dp.logger.exception("Unable to download training & test CSV. Error: %s", e)
 
 
 @app.route('/api/', methods=['POST'])
@@ -30,11 +31,11 @@ def get_preds():
 
 
     # preprocessing pipeline
-    _, _, df = data_prep(train, df)
+    _, _, df = dp.data_prep(train, df)
 
     
     # get preds
-    preds = predict(df)
+    preds = predict_(df)
     preds = preds.tolist()
     json_str = json.dumps(preds)
 
