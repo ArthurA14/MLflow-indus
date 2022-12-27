@@ -13,17 +13,17 @@ import feature as ft
 import utils
 
 
-# TRAIN_DF_PATH = r'..\\data\\train_enrich.csv'
-# VAL_DF_PATH = r'..\\data\\val_enrich.csv'
-# TEST_DF_PATH = r'..\\data\\test_enrich.csv' 
+TRAIN_DF_PATH = r'..\\data\\train_enrich.csv'
+VAL_DF_PATH = r'..\\data\\val_enrich.csv'
+TEST_DF_PATH = r'..\\data\\test_enrich.csv' 
 
-# try :
-#     # get data
-#     train_enrich = utils.get_data(TRAIN_DF_PATH)
-#     val_enrich = utils.get_data(VAL_DF_PATH)
-#     test_enrich = utils.get_data(TEST_DF_PATH)
-# except Exception as e :
-#     dp.logger.exception("Unable to download training & test CSV. Error: %s", e)
+try :
+    # get data
+    train_enrich = utils.get_data(TRAIN_DF_PATH)
+    val_enrich = utils.get_data(VAL_DF_PATH)
+    test_enrich = utils.get_data(TEST_DF_PATH)
+except Exception as e :
+    dp.logger.exception("Unable to download training & test CSV. Error: %s", e)
 
 
 #create experiment
@@ -52,17 +52,17 @@ args = parser.parse_args()
 with mlflow.start_run(run_name="PARENT_RUN") :
 
     # separate features from target
-    y_train_enrich = ft.train_enrich.TARGET
-    y_val_enrich = ft.val_enrich.TARGET
-    X_train_enrich = ft.train_enrich.drop('TARGET', axis=1)
-    X_val_enrich = ft.val_enrich.drop('TARGET', axis=1)
+    y_train_enrich = train_enrich.TARGET
+    y_val_enrich = val_enrich.TARGET
+    X_train_enrich = train_enrich.drop('TARGET', axis=1)
+    X_val_enrich = val_enrich.drop('TARGET', axis=1)
 
     # imputation
     imputer = SimpleImputer(strategy='median')
     imputer.fit(X_train_enrich) 
     X_train_enrich = imputer.transform(X_train_enrich)
     X_val_enrich = imputer.transform(X_val_enrich)
-    test_enrich = imputer.transform(ft.test_enrich)
+    test_enrich = imputer.transform(test_enrich)
     # saving fitted imputer
     joblib.dump(imputer, "../data/imputer.save") 
 
@@ -139,6 +139,8 @@ with mlflow.start_run(run_name="PARENT_RUN") :
         mlflow.log_metric("f1_score", best_f1score)
         mlflow.log_metric("accuracy", best_acc)
 
+
+    joblib.dump(best_model, "../data/best_model.save") 
 
 
     tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
