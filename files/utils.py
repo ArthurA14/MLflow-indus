@@ -80,7 +80,7 @@ def encoding(df, is_train=True) :
         pd.DataFrame: dataframe with encoded categorical features
     """
 
-    print(f'{df} features shape : ', df.shape)
+    print('features shape : ', df.shape)
 
     # Label encoding categorial variables if categorial count <= 2
     le = LabelEncoder()
@@ -110,7 +110,7 @@ def encoding(df, is_train=True) :
     # one-hot encoding of categorical variables
     df = pd.get_dummies(df)
 
-    print(f'{df} features shape after encoding : ', df.shape)
+    print('features shape after encoding : ', df.shape)
 
     return df
 
