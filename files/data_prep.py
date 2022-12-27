@@ -84,6 +84,8 @@ def data_prep(train_df, test_df) :
     test_df = utils.fix_anomalies(test_df)
 
 
+    ################## RECORDING OF THE NEW DATAFRAMES IN A HARD COPY ##################
+
     TRAIN_DF_PATH = r'..\\data\\train_df.csv'
     utils.write_data(TRAIN_DF_PATH, train_df)
 
