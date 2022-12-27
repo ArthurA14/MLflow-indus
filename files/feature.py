@@ -2,19 +2,19 @@ import data_prep as dp
 import utils
 
 
-# TRAIN_DF_PATH = r'..\\data\\train_df.csv'
-# VAL_DF_PATH = r'..\\data\\val_df.csv'
-# TEST_DF_PATH = r'..\\data\\test_df.csv' 
+TRAIN_DF_PATH = r'..\\data\\train_df.csv'
+VAL_DF_PATH = r'..\\data\\val_df.csv'
+TEST_DF_PATH = r'..\\data\\test_df.csv' 
 
-# try :
-#     # get data
-#     train_df = utils.get_data(TRAIN_DF_PATH)
-# #     val_df = utils.get_data(VAL_DF_PATH)
-# #     test_df = utils.get_data(TEST_DF_PATH)
-# except Exception as e :
-#     dp.logger.exception("Unable to download training & test CSV. Error: %s", e)
+try :
+    # get data
+    train_df = utils.get_data(TRAIN_DF_PATH)
+    val_df = utils.get_data(VAL_DF_PATH)
+    test_df = utils.get_data(TEST_DF_PATH)
+except Exception as e :
+    dp.logger.exception("Unable to download training & test CSV. Error: %s", e)
 
-train_df, val_df, test_df = dp.train_df, dp.val_df, dp.test_df
+train_df, val_df, test_df = train_df, val_df, test_df
 
 
 def feature_prep(train_df, val_df, test_df) :
