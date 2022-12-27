@@ -22,7 +22,7 @@ EXPERIMENT_ID = client.get_experiment_by_name(EXPERIMENT_NAME).experiment_id
 
 
 # HERE: put the path of the best model (found on MLflow ui)
-logged_model = 'runs:/f67e89851aed4bc686c997b78507e4bc/model'
+logged_model = 'runs:/a200f9aac414451ca93d8090355b71e2/model'
 
 # Load model as a PyFuncModel
 loaded_model = mlflow.pyfunc.load_model(logged_model)
