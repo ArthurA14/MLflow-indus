@@ -40,11 +40,12 @@ python3 predict.py
 python3 main.py
 ```
 
-Then provide a csv to the endpoint URL (cf. code in notebook test_api.ipynb)
+Then provide a csv to the endpoint URL (cf. code in notebook *test_api.ipynb*)
 
 
 ## SHAP Library
 
 ### Let's get some explanations from visualizations
 
-Cf. code in notebook shap_viz.ipynb
+* Let's generate and save the model with *train.py* file (*joblib* inside)
+* Let's load the model and get som visualizations on test set (cf. code in notebook *shap_viz.ipynb*)
