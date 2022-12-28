@@ -39,6 +39,7 @@ https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda/
 
 ....................................................................
 
+
 -> Puis utiliser Anaconda Prompt :
 
 > conda install numpy	| conda install -n myvenv numpy
