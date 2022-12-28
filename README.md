@@ -47,5 +47,5 @@ Then provide a csv to the endpoint URL (cf. code in notebook *test_api.ipynb*)
 
 ### Let's get some explanations from visualizations
 
-* Let's generate and save the model with *train.py* file (*joblib* inside)
-* Let's load the model and get som visualizations on test set (cf. code in notebook *shap_viz.ipynb*)
+* Let's generate and save the model with the *train.py* file (*joblib* inside)
+* Let's load the model and get some visualizations on the test set (cf. code in notebook *shap_viz.ipynb*)
