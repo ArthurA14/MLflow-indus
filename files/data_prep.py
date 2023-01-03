@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 # setting warning
 warnings.filterwarnings("ignore")
 
-# setting the seed 
+# setting the seed to control the randomness
 np.random.seed(40)  
 
 
