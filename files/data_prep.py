@@ -44,7 +44,7 @@ def data_prep(train_df, test_df) :
     train_df, val_df = train_test_split(train_df, test_size=0.20, stratify=train_df['TARGET'], random_state=42)
 
 
-    ############################ DROP COLUMNS CONTAINING TOO MUCH NAN val_dfUES #########################
+    ############################ DROP COLUMNS CONTAINING TOO MUCH NAN VALUES #########################
 
     train_df = utils.drop_column_with_nan(train_df)
     val_df = utils.drop_column_with_nan(val_df)
