@@ -40,7 +40,7 @@ def data_prep(train_df, test_df) :
         pd.DataFrame of train, val and test pre processed
     """  
 
-    # Split the data into train_dfing and test_df sets. (0.80, 0.20) split.
+    # Split the data into train_df and test_df sets. (0.80, 0.20) split.
     train_df, val_df = train_test_split(train_df, test_size=0.20, stratify=train_df['TARGET'], random_state=42)
 
 
