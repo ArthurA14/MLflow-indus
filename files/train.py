@@ -110,8 +110,9 @@ with mlflow.start_run(run_name="PARENT_RUN") :
         # Selecting a parameter range to try out
         C = [1, 0.1, 0.01, 0.001, 0.0001, 0.00001]
         # For each value of C, running a child run
-        best_model = 0
+        best_f1score = 0
         best_acc = 0
+        best_model = 0
 
         for param_value in C :
             with mlflow.start_run(run_name="CHILD_RUN", nested=True) :
