@@ -23,7 +23,7 @@ EXPERIMENT_ID = client.get_experiment_by_name(EXPERIMENT_NAME).experiment_id
 
 
 # HERE: put the path of the best model (found on MLflow ui)
-logged_model = 'runs:/8056ca71cee74d5ead32102be2d983fc/model'
+logged_model = 'runs:/5121b893f25d4b43a5a9ed5fe0ab3e8f/model'
 
 # Load model as a PyFuncModel
 loaded_model = mlflow.pyfunc.load_model(logged_model)
@@ -77,7 +77,7 @@ def predict_model(TEST_DF_PATH) :
     y_pred = y_pred.reshape(y_pred.shape[0], 1)
 
     # Create the dataframe from numpy.ndarray
-    test_enrich_df = pd.DataFrame(ft.test_enrich, columns=list(ft.test_enrich.columns))
+    test_enrich_df = pd.DataFrame(test_enrich, columns=list(test_enrich.columns))
     y_pred_df = pd.DataFrame(y_pred, columns=['y_pred'])
 
     # Add y_pred column to the X_test dataset
