@@ -50,6 +50,8 @@ pip install -r requirements.txt
 
 ### Data preparation
 
+#### Attention : il est nécessaire de télécharger les fichiers application_train.csv et application_test.csv sur Kaggle et de les stocker dans un dossier data/ à la racine.
+
 ```bash
 python3  data_prep.py
 ```
