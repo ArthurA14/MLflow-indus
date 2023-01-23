@@ -3,7 +3,8 @@ import pandas as pd
 from mlflow.tracking import MlflowClient
 import mlflow
 import utils
-import feature as ft
+import data_prep as dp
+# import feature as ft
 
 
 EXPERIMENT_NAME = "mlflow-demo"
@@ -22,13 +23,13 @@ EXPERIMENT_ID = client.get_experiment_by_name(EXPERIMENT_NAME).experiment_id
 
 
 # HERE: put the path of the best model (found on MLflow ui)
-logged_model = 'runs:/a200f9aac414451ca93d8090355b71e2/model'
+logged_model = 'runs:/8056ca71cee74d5ead32102be2d983fc/model'
 
 # Load model as a PyFuncModel
 loaded_model = mlflow.pyfunc.load_model(logged_model)
 
 
-def predict_(data: pd.DataFrame):
+def predict_(data: pd.DataFrame) :
     """
     Helper to make predictions on data
     
@@ -48,23 +49,50 @@ def predict_(data: pd.DataFrame):
     return loaded_model.predict(data)
 
 
+def predict_model(TEST_DF_PATH) :
+    """
+    Function to process prediction on data
+    
+    Args: 
+        pd.DataFrame of test raw , val raw and test raw
+    
+    Returns:
+        prediction for the loaded model
+    """ 
+
+    ###################### GET DATA FROM FEATURE FILE ######################
+
+    try :
+        # get data
+        test_enrich = utils.get_data(TEST_DF_PATH)
+    except Exception as e :
+        print("Unable to download training & test CSV. Error: %s", e)
+
+    # test_enrich = dp.test_enrich
+
+
+    ######################### MAKING PREDICTION #########################
+
+    y_pred = predict_(test_enrich) # y_pred = loaded_model.predict(X_test)
+    y_pred = y_pred.reshape(y_pred.shape[0], 1)
+
+    # Create the dataframe from numpy.ndarray
+    test_enrich_df = pd.DataFrame(ft.test_enrich, columns=list(ft.test_enrich.columns))
+    y_pred_df = pd.DataFrame(y_pred, columns=['y_pred'])
+
+    # Add y_pred column to the X_test dataset
+    test_df = test_enrich_df.join(y_pred_df)
+
+
+    PATH = r'..\\data\\final_test_df.csv'
+    utils.write_data(PATH, test_df)
+
+
+
 if __name__ == "__main__" :
     with mlflow.start_run() :
-
-        y_pred = predict_(ft.test_enrich) # y_pred = loaded_model.predict(X_test)
-        y_pred = y_pred.reshape(y_pred.shape[0], 1)
-
-        # Create the dataframe from numpy.ndarray
-        test_enrich_df = pd.DataFrame(ft.test_enrich, columns=list(ft.test_enrich.columns))
-        y_pred_df = pd.DataFrame(y_pred, columns=['y_pred'])
-
-        # Add y_pred column to the X_test dataset
-        test_df = test_enrich_df.join(y_pred_df)
-
-
-        PATH = r'..\\data\\final_test_df.csv'
-        utils.write_data(PATH, test_df)
-
+        TEST_DF_PATH = r'..\\data\\test_enrich.csv'
+        predict_model(TEST_DF_PATH)
 
 
         # # Delete runs (DO NOT USE UNLESS CERTAIN)
