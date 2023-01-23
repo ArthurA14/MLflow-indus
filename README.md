@@ -34,11 +34,11 @@ project is organized into 3 parts :
     
 - Part 3 : Integrate ML Interpretability to your project
     ● Install SHAP in your python environment (don’t forget to add it to your lib requirements)
-    ● Use it to explain your model predictions :
-        ● Build a TreeExplainer and compute Shaplay Values
-        ● Visualize explanations for a specific point of your data set,
-        ● Visualize explanations for all points of your data set at once,
-        ● Visualize a summary plot for each class on the whole dataset.
+    ● Use it to explain your model predictions : <br>
+        - Build a TreeExplainer and compute Shaplay Values, <br>
+        - Visualize explanations for a specific point of your data set, <br>
+        - Visualize explanations for all points of your data set at once, <br>
+        - Visualize a summary plot for each class on the whole dataset. <br>
 
 ## Package Usage
 
