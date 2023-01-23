@@ -50,7 +50,7 @@ pip install -r requirements.txt
 
 ### Data preparation
 
-#### Attention : il est nécessaire de télécharger les fichiers application_train.csv et application_test.csv sur Kaggle et de les stocker dans un dossier data/ à la racine.
+#### Warning: it is necessary to download the application_train.csv and application_test.csv files on Kaggle and store them in a data/ folder in the root.
 
 ```bash
 python3  data_prep.py
@@ -69,7 +69,7 @@ python3 train.py logistic
 
 ### Predicting on test data
 
-#### Warning : provide the model path in the script
+#### Warning : provide the model path in the script, you can retrieve it in MLflow UI.
 
 ![image](https://user-images.githubusercontent.com/57401552/209138374-4ed4009c-23a9-47dc-9a87-9c6bb4edef77.png)
 
