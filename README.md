@@ -23,7 +23,7 @@ python3 train.py logistic
 ```
 
 ### MLFLOW UI
-Launch mlflow ui in the "../files" directory
+Launch ***mlflow ui*** command in the "**../files**" directory
 ```bash
 cd files
 mlflow ui
