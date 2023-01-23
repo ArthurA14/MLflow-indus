@@ -47,7 +47,7 @@ Intall the required packages:
 ```bash
 pip install -r requirements.txt
 ```
-#### Warning: This step is really important. By running this command, many requirements, which are located in the subdirectory **'opt/conda/'**, or in the directory **'tmp/'**, and in other directories related to the operating system used, are written in this file.
+#### Warning: This step is really important. By running this command, many requirements, which are located in the subdirectory *'opt/conda/'*, or in the directory *'tmp/'*, and in other directories related to the operating system used, are written in this file.
 In this repository, we have simply put the main dependencies required to complete the project.
 
 ### Data preparation
