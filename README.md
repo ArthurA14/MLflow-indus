@@ -14,26 +14,26 @@ MLflow consists of the following four main components:
 The goal of this project is to apply some concepts & tools seen in the 3 sessions of this course, this
 project is organized into 3 parts :
 
-- Part 1 : Building Classical ML projects with respect to basic ML Coding best practices
-    ● Use GIT for team collaboration, code & model versioning
+- Part 1 : Building Classical ML projects with respect to basic ML Coding best practices <br>
+    ● Use GIT for team collaboration, code & model versioning <br>
     ● Separate your ML project workflow into different scripts (data preparation, feature
-    engineering, models training, predict)
+    engineering, models training, predict) <br>
     ● Use a template cookie cutter or adapt/define your own (Example :
-    https://drivendata.github.io/cookiecutter-data-science/ )
+    https://drivendata.github.io/cookiecutter-data-science/ ) <br>
     ● Use a conda environment for all your libraries (or any other package/environnement
-    management like poetry)
-    ● Use a documentation library (Sphinx recommended) : despite several attempts, we couldn't make Sphinx work on this project.
+    management like poetry) <br>
+    ● Use a documentation library (Sphinx recommended) : despite several attempts, we couldn't make Sphinx work on this project.  
     
-- Part 2 : Integrate MLFlow to your project
-    ● Install MLFlow in your python environment (don’t forget to add it to your lib requirements)
+- Part 2 : Integrate MLFlow to your project <br>
+    ● Install MLFlow in your python environment (don’t forget to add it to your lib requirements) <br>
     ● Track parameters & metrics of your model and display the results in your local mlflow UI
-    (multiple runs)
-    ● Package your code in a reusable and reproducible model format with ML Flow projects
+    (multiple runs) <br>
+    ● Package your code in a reusable and reproducible model format with ML Flow projects <br>
     ● Deploy your model into a local REST server that will enable you to score predictions
     (Optional) : we build a REST API for this purpose.
     
-- Part 3 : Integrate ML Interpretability to your project
-    ● Install SHAP in your python environment (don’t forget to add it to your lib requirements)
+- Part 3 : Integrate ML Interpretability to your project <br>
+    ● Install SHAP in your python environment (don’t forget to add it to your lib requirements) <br>
     ● Use it to explain your model predictions : <br>
         - Build a TreeExplainer and compute Shaplay Values, <br>
         - Visualize explanations for a specific point of your data set, <br>
