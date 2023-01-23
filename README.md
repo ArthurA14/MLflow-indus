@@ -22,6 +22,13 @@ python3 train.py lgbm
 python3 train.py logistic
 ```
 
+### MLFLOW UI
+Launch mlflow ui in the "../files" directory
+```bash
+cd files
+mlflow ui
+```
+
 ### Predicting on test data
 
 #### Warning : provide the model path in the script
