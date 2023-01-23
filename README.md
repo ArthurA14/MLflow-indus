@@ -52,6 +52,8 @@ In this repository, we have simply put the main dependencies required to complet
 
 We also had to fix some errors related to certain versions of certain dependencies. Therefore, it is not guaranteed that the code will work immediately on any machine, the operator will have to fix these errors first.
 
+Finally, the paths in this code are those of a Windows machine. On Linux, backslashes will have to be replaced with slashes.
+
 ### Data preparation
 
 #### Warning: it is necessary to download the application_train.csv and application_test.csv files on Kaggle and store them in a data/ folder in the root.
