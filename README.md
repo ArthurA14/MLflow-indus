@@ -50,6 +50,8 @@ pip install -r requirements.txt
 #### Warning: This step is really important. By running this command, many requirements, which are located in the subdirectory *'opt/conda/'*, or in the directory *'tmp/'*, and in other directories related to the operating system used, are written in this file.
 In this repository, we have simply put the main dependencies required to complete the project.
 
+We also had to fix some errors related to certain versions of certain dependencies. Therefore, it is not guaranteed that the code will work immediately on any machine, the operator will have to fix these errors first.
+
 ### Data preparation
 
 #### Warning: it is necessary to download the application_train.csv and application_test.csv files on Kaggle and store them in a data/ folder in the root.
