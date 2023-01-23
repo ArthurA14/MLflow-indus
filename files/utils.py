@@ -1,38 +1,56 @@
-import pandas as pd
-from sklearn.preprocessing import LabelEncoder
 import numpy as np
+import pandas as pd 
+from sklearn.preprocessing import LabelEncoder
 import joblib
 
 
-def get_data(URL) :
- 
-    """This method will be used to extract data from a csv file
-
-        :param str URL: Path to the csv file 
-
-        :returns: The extracted pandas dataframe
-
-        :rtype: pd.DataFrame
+def get_data(path) :
     """
-    return pd.read_csv(URL, sep=",")
+    Helper to extract data from a csv file
     
-
-def write_data(URL, df) : 
-
-    """This method will be used to write a dataframe to csv
-
-        :param str URL: Path to the csv file 
-        :param pd.DataFrame df: Dataframe to save as a csv file
-
-        :returns: The CSV file
-
-        :rtype: csv
+    Args: 
+        path to the csv file
+    
+    Returns:
+        pd.DataFrame
     """
+    return pd.read_csv(path, sep=",", header='infer')
 
-    return df.to_csv(URL, sep=",", index=False, header=True)
+
+def write_data(path, df) : 
+    """
+    Helper which writes a dataframe to csv
+    
+    Args: 
+        Path: path to the csv file
+        pd.DataFrame: dataframe to save as a csv file
+    
+    Returns:
+        CSV file
+    """
+    return df.to_csv(path, sep=",", index=False, header=True)
 
 
-def fix_anomalies(df):
+def drop_column_with_nan(df) :
+    """
+    An helper function which drop columns with a too large amount of nan values
+    
+    Args: 
+        pd.DataFrame: any dataset
+    
+    Returns:
+        pd.DataFrame: the same dataset stripped of these columns
+    """
+    mask = df.isnull().any(axis=0) # a columns list with missing data
+    columns_with_nan  = df.columns[mask]
+    for column in columns_with_nan :
+        if df[column].isnull().sum() / df.shape[0] > 0.60:
+            df.drop(column, 1, inplace=True)
+
+    return df
+
+
+def fix_anomalies(df) :
     """
     Helper to spot anomalies in the data
     
@@ -51,60 +69,62 @@ def fix_anomalies(df):
     return df
 
 
-def encoding(df, is_trainable=True):
+def encoding(df, is_train=True) :
     """
-    An encoding helper function to encode categorical vars
+    An encoding helper function to create new dataframes with business features
     
     Args: 
-        pd.DataFrame: dataset to encode
-        bool: True if train set, False otherwise. Default: True.
+        pd.DataFrame: dataframe to encode
+        boolean: True if train set, false otherwise. Default: True
     
     Returns:
-        pd.DataFrame: dataset with encoded categorical features
-    """ 
-    
-    print('Features shape before encoding: ', df.shape) 
+        pd.DataFrame: dataframe with encoded categorical features
+    """
 
-    # label encoding categorial variables if cat count <= 2
+    print('features shape : ', df.shape)
+
+    # Label encoding categorial variables if categorial count <= 2
     le = LabelEncoder()
-    encoder_filename = "encoder.save"   
-    encoded_cols = list()
-    if is_trainable:
-        for col in df:
-            if df[col].dtype == 'object' :
-                if len(list(df[col].unique())) <= 2:
-                        # Train on the training data and avoid leakage
-                        le.fit(df[col])
-                        # Transform
-                        df[col] = le.transform(df[col])
-                        encoded_cols.append(col)
+    encoded_columns = []
+
+    if is_train : 
+        for column in df :
+            if df[column].dtype == 'object' :
+                if len(list(df[column].unique())) <= 2:
+                    # Training on the training data and avoid leakage
+                    le.fit(df[column])
+                    # Transform train data
+                    df[column] = le.transform(df[column])
+                    encoded_columns.append(column)
+
         # saving fitted encoder
-        joblib.dump(le, encoder_filename) 
-    else:
-        le = joblib.load(encoder_filename) 
-        for col in encoded_cols:
-            if df[col].dtype == 'object' :
-                if len(list(df[col].unique())) <= 2:
-                    df[col] = le.transform(df[col])
+        joblib.dump(le, "../data/encoder.save") 
     
+    else : 
+        le = joblib.load("../data/encoder.save") 
+        for column in encoded_columns :
+            if df[column].dtype == 'object' :
+                if len(list(df[column].unique())) <= 2:
+                    df[column] = le.transform(df[column])    
 
-    # one-hot encoding of remaining categorical variables
-    df = pd.get_dummies(df) 
 
-    print('Features shape after encoding: ', df.shape) 
+    # one-hot encoding of categorical variables
+    df = pd.get_dummies(df)
 
-    return df 
+    print('features shape after encoding : ', df.shape)
+
+    return df
 
 
-def feature_eng(df):
+def feature_eng(df) :
     """
     A feature engineering function to create new dataframes with business features
     
     Args: 
-        pd.DataFrame: dataset to enrich 
+        pd.DataFrame: dataframe to enrich
     
     Returns:
-        pd.DataFrame: dataset with added business features
+        pd.DataFrame: dataframe with added business features
     """
 
     df['CREDIT_INCOME_PERCENT'] = df['AMT_CREDIT'] / df['AMT_INCOME_TOTAL']
