@@ -53,13 +53,6 @@ python3 train.py lgbm
 python3 train.py logistic
 ```
 
-### MLFLOW UI
-Launch ***mlflow ui*** command in the **"../mlflow_project/files"** directory
-```bash
-cd files
-mlflow ui
-```
-
 ### Predicting on test data
 
 #### Warning : provide the model path in the script
@@ -68,6 +61,13 @@ mlflow ui
 
 ```bash
 python3 predict.py
+```
+
+### MLflow UI
+Launch ***mlflow ui*** command in the **"../mlflow_project/files"** directory
+```bash
+cd files
+mlflow ui
 ```
 
 ## API Usage
