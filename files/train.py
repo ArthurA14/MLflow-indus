@@ -2,28 +2,15 @@ from sklearn.linear_model import LogisticRegression
 import lightgbm as lgb
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score, precision_score
 from urllib.parse import urlparse
 import mlflow
 import mlflow.sklearn
 from argparse import ArgumentParser
 import joblib
 import data_prep as dp
-import feature as ft
+# import feature as ft
 import utils
-
-
-TRAIN_DF_PATH = r'..\\data\\train_enrich.csv'
-VAL_DF_PATH = r'..\\data\\val_enrich.csv'
-TEST_DF_PATH = r'..\\data\\test_enrich.csv' 
-
-try :
-    # get data
-    train_enrich = utils.get_data(TRAIN_DF_PATH)
-    val_enrich = utils.get_data(VAL_DF_PATH)
-    test_enrich = utils.get_data(TEST_DF_PATH)
-except Exception as e :
-    dp.logger.exception("Unable to download training & test CSV. Error: %s", e)
 
 
 #create experiment
@@ -48,8 +35,31 @@ parser.add_argument('model',
 args = parser.parse_args()
 
 
-# if __name__ == "__main__" :
-with mlflow.start_run(run_name="PARENT_RUN") :
+def train_model(TRAIN_DF_PATH, VAL_DF_PATH, TEST_DF_PATH) :
+    """
+    Function to process training on data
+    
+    Args: 
+        pd.DataFrame of train raw , val raw and test raw
+    
+    Returns:
+        Best metrics & model : f1score, accuracy, model
+    """ 
+
+    ######################### GET DATA FROM FEATURE FILE #########################
+
+    try :
+        # get data
+        train_enrich = utils.get_data(TRAIN_DF_PATH)
+        val_enrich = utils.get_data(VAL_DF_PATH)
+        test_enrich = utils.get_data(TEST_DF_PATH)
+    except Exception as e :
+        dp.logger.exception("Unable to download training & test CSV. Error: %s", e)
+
+    # train_enrich, val_enrich, test_enrich = dp.data_prep(TRAIN_DF_PATH, TEST_DF_PATH)
+
+    
+    ####################### PREPARATION - IMPUTATION - SCALING #######################
 
     # separate features from target
     y_train_enrich = train_enrich.TARGET
@@ -76,7 +86,12 @@ with mlflow.start_run(run_name="PARENT_RUN") :
     joblib.dump(scaler, "../data/std_scaler.save") 
 
 
+    ################## DEFINITION - TRAINING - LOGGING - TESTING - SCORING ##################
+
     if args.model[0] == 'lgbm' :
+        best_f1score = 0
+        best_acc = 0
+        best_model = 0
 
         # Create the model
         best_model = lgb.LGBMClassifier(n_estimators=10000, objective='binary', 
@@ -103,10 +118,8 @@ with mlflow.start_run(run_name="PARENT_RUN") :
         print('f1_score : ', f1_score(y_val_enrich, y_pred), 'accuracy_score : ', accuracy_score(y_val_enrich, y_pred))
         mlflow.log_metric("f1_score", f1score)
         mlflow.log_metric("accuracy", accuracy)
-
-    
-    else : 
-
+  
+    else :
         # Selecting a parameter range to try out
         C = [1, 0.1, 0.01, 0.001, 0.0001, 0.00001]
         # For each value of C, running a child run
@@ -128,8 +141,8 @@ with mlflow.start_run(run_name="PARENT_RUN") :
                 y_pred = model.predict(X_val_enrich)
 
                 # get metrics 
-                c, f1score, accuracy = param_value, f1_score(y_val_enrich, y_pred), accuracy_score(y_val_enrich, y_pred)
-                print('c: ', c, ': ', 'f1_score: ', f1_score(y_val_enrich, y_pred), 'accuracy_score: ', accuracy_score(y_val_enrich, y_pred)) # accuracy_score(y_test, y_pred)
+                c, f1score, accuracy = param_value, f1_score(y_val_enrich, y_pred), precision_score(y_val_enrich, y_pred)
+                print('c: ', c, ': ', 'f1_score: ', f1_score(y_val_enrich, y_pred), 'accuracy_score: ', precision_score(y_val_enrich, y_pred)) # accuracy_score(y_test, y_pred)
 
                 if accuracy > best_acc :
                     best_f1score = f1score
@@ -143,7 +156,6 @@ with mlflow.start_run(run_name="PARENT_RUN") :
 
     joblib.dump(best_model, "../data/best_model.save") 
 
-
     tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 
     # Model registry does not work with file store
@@ -154,3 +166,14 @@ with mlflow.start_run(run_name="PARENT_RUN") :
         mlflow.sklearn.log_model(best_model, "model", registered_model_name=f"{args.model[0]}_model")
     else :
         mlflow.sklearn.log_model(best_model, "model")
+
+    return best_f1score, best_acc, best_model
+
+
+
+# if __name__ == "__main__" :
+with mlflow.start_run(run_name="PARENT_RUN") :
+    TRAIN_DF_PATH = r'..\\data\\train_enrich.csv'
+    VAL_DF_PATH = r'..\\data\\val_enrich.csv'
+    TEST_DF_PATH = r'..\\data\\test_enrich.csv' 
+    train_model(TRAIN_DF_PATH, VAL_DF_PATH, TEST_DF_PATH)
