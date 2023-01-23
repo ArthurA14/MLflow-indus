@@ -43,10 +43,10 @@ def drop_column_with_nan(df) :
     """
     mask = df.isnull().any(axis=0) # a columns list with missing data
     columns_with_nan  = df.columns[mask]
-    for column in columns_with_nan:
+    for column in columns_with_nan :
         if df[column].isnull().sum() / df.shape[0] > 0.60:
             df.drop(column, 1, inplace=True)
- 
+
     return df
 
 
