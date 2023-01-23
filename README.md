@@ -42,6 +42,12 @@ project is organized into 3 parts :
 
 ## Package Usage
 
+Intall the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
 ### Training 
 
 * lbgm model: 
