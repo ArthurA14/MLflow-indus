@@ -23,4 +23,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ${{ secrets.USERNAME }}/efrei-devops-tp2:latest 
+          tags: ${{ secrets.USERNAME }}/mlflow_project:latest 
