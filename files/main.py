@@ -5,10 +5,8 @@ import data_prep as dp
 import utils
 from predict import predict_
 
-
 app = Flask(__name__)
 TRAIN_DF_PATH = r'..\\data\\application_train.csv'
-
 
 try :
     # get data
@@ -29,18 +27,15 @@ def get_preds():
         # io.StringIO(result)
         df = pd.read_csv(stream)
 
-
     # preprocessing pipeline
     _, _, df = dp.data_prep(train, df)
 
-    
     # get preds
     preds = predict_(df)
     preds = preds.tolist()
     json_str = json.dumps(preds)
 
     return json_str
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port='5004')
